@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Dropdown list onFly</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+      <style>
+      /* input
+      styles */
+        #sourceString {
+          height: 2.5em;
+          min-width: 100%;
+          max-width: 100%;
+          background-color: #fff;
+          border-color: #c3cad8 !important;
+          color: #2c3345;
+          font-size: 1em;
+          border-radius: 4px;
+          border: 1px solid;
+          display: block;
+          padding: 0 .625em;
+          outline: 0;
+          margin: 0;
+          text-align: left;
+          box-sizing: border-box;
+        }
+      </style>
+   </head>
+   <body>
+     <input type="text" id="sourceString" class="form-textbox" value="">
+     
+     <script type="text/javascript">
+       var input = $('#sourceString');
+     
+       function myWidget() {
+         // get widget parameters if any
+         var params = JFCustomWidget.getWidgetSettings();
+         
+         // exposed functions
+         this.init = init;
+         this.getData = getData;
+         this.fillConditionValue = fillConditionValue;
+         
+         // initialization of the widget
+         function init(formData) {
+           
+           // send data to Jotform on change input
+           input.on('change', function() {
+             JFCustomWidget.sendData(getData());
+             JFCustomWidget.hideWidgetError();
+           });
+         }
+         
+         // fill the value set by conditions
+         function fillConditionValue(data) {
+           var inputValue = data.value || '';
+           input.val(inputValue);
+           JFCustomWidget.hideWidgetError();
+         }
+         
+         // get widget data
+         function getData() {
+           var inputValue = input.val();
+           return {
+             valid: !!inputValue,
+             value: inputValue
+           };
+         }
+       }
+        // always subscribe to ready event and implement widget related code
+        // inside callback function , it is the best practice while developing widgets
+        JFCustomWidget.subscribe("ready", function(data) {
+          var widget = new myWidget();
+          widget.init(data);
+ 
+          JFCustomWidget.subscribe("submit", function() {
+            JFCustomWidget.sendSubmit(widget.getData());
+          });
+         
+          JFCustomWidget.subscribe('populate', widget.fillConditionValue);
+        });
+       
+     </script>
+   </body>
+</html>
