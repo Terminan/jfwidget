@@ -1,33 +1,60 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Regex Extract</title>
+        <title>Regex Extraction</title>
         <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
     </head>
     <body>
         <div id="main">
             <span id="labelText"></span>
-            <input type="text" id="userInput">
-            <input type="text" id="output" readonly>
+            <input type="text" class="form-textbox" id="inputField">
+            <input type="text" class="form-textbox" id="outputField" readonly>
         </div>
         <script type="text/javascript">
-            //always subscribe to ready event and implement widget related code
-            //inside callback function , it is the best practice while developing widgets
             JFCustomWidget.subscribe("ready", function(){
-                var label = JFCustomWidget.getWidgetSetting('QuestionLabel');
+                let label = JFCustomWidget.getWidgetSetting('QuestionLabel');
                 document.getElementById('labelText').innerHTML = label;
-                //subscribe to form submit event
-                JFCustomWidget.subscribe("submit", function(){
-                    var msg = {
-                        //you should valid attribute to data for JotForm
-                        //to be able to use youw widget as required
-                        valid: true,
-                        value: document.getElementById('output').value
-                    }
-                    // send value to JotForm
-                    JFCustomWidget.sendSubmit(msg);
+                
+                //let key = JFCustomWidget.getWidgetSetting('KeyValue');
+
+                let regexStr = JFCustomWidget.getWidgetSetting('RegexString');
+
+                //let regexFlags = JFCustomWidget.getWidgetSetting('RegexFlags');
+
+                const inputField = document.getElementById("inputField");
+                const outputField = document.getElementById("outputField");
+
+                inputField.addEventListener("input", function() {
+                    formatOutput();
+                    JFCustomWidget.sendData(outputData());
                 });
-                JFCustomWidget.subscribe('populate', widget.fillConditionValue);
+
+                function conditionalFill(data) {
+                    let inputValue = data.value || '';
+                    inputField.value = inputValue;
+                }
+                
+                function formatOutput() {
+                    let regex = new RegExp(regexStr);
+                    let input = inputField.value;
+                    let output = input.match(regex).toString();
+
+                    outputField.value = output;
+                }
+
+                function outputData() {
+                    return {
+                        //currently always sending true for valid, as a null value is valid if no match
+                        valid: true,
+                        value: document.getElementById('outputField').value
+                    }
+                }
+                
+                JFCustomWidget.subscribe("submit", function(){
+                    //send value to JotForm
+                    JFCustomWidget.sendSubmit(outputData());
+                });
+                JFCustomWidget.subscribe('populate', conditionalFill(data));
             });
         </script>
     </body>

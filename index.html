@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Vanilla Code</title>
+</head>
+<body>
+    <span id="labelText">Test Widget</span>
+    <input type="text" id="regex">
+    <input type="text" id="inputTest">
+    <input type="text" id="output" readonly>
+    <script>
+        const regexField = document.getElementById("regex");
+        const inputField = document.getElementById("inputTest");
+        const outputField = document.getElementById("output");
+
+        inputField.addEventListener("input", function() {
+            let regex = new RegExp(regexField.value);
+            let input = inputField.value;
+
+            console.log(regex, input);
+
+            let output = input.match(regex)[1].toString();
+            outputField.value = output;
+        });
+    </script>
+</body>
+</html>
