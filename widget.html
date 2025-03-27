@@ -11,7 +11,7 @@
             <input type="text" class="form-textbox" id="outputField" readonly>
         </div>
         <script type="text/javascript">
-            JFCustomWidget.subscribe("ready", function(){
+            JFCustomWidget.subscribe("ready", function(data){
                 let label = JFCustomWidget.getWidgetSetting('QuestionLabel');
                 document.getElementById('labelText').innerHTML = label;
                 
